@@ -26,7 +26,7 @@ export class Auth {
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required]] //Retiro (.minLength)
     });
 
     this.registerForm = this.fb.group({
@@ -58,11 +58,27 @@ export class Auth {
   }
 
   async iniciarSesion() {
-    if (this.loginForm.invalid) {
-      this.marcarCamposComoTocados(this.loginForm);
-      this.alertService.warning('Formulario incompleto', 'Por favor completa todos los campos correctamente');
-      return;
-    }
+   
+  // ❌ Validación 1: Verificar que el formulario sea válido
+  if (this.loginForm.invalid) {
+    this.marcarCamposComoTocados(this.loginForm);
+    this.alertService.warning('Formulario incompleto', 'Por favor completa todos los campos correctamente');
+    return;
+  }
+
+  // Validar formato básico de email
+  const email = this.loginForm.get('email')?.value as string | undefined;
+  if (!email || !email.includes('@')) {
+    this.alertService.error('Email inválido', 'Por favor ingresa un email válido');
+    return;
+  }
+
+  // Validar longitud mínima de contraseña
+  const password = this.loginForm.get('password')?.value as string | undefined;
+  if (!password || password.length < 6) {
+    this.alertService.error('Contraseña inválida', 'La contraseña debe tener al menos 6 caracteres');
+    return;
+  }
 
     this.cargando = true;
 
@@ -96,9 +112,8 @@ export class Auth {
     this.cargando = true;
 
     try {
-      const { nombre, apellido, cedula, telefono, carrera, email, password } = this.registerForm.value;
+      const { apellido, cedula, telefono, carrera, email, password } = this.registerForm.value;
       await this.authService.register({
-        nombre,
         apellido,
         email,
         password,

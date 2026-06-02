@@ -8,9 +8,9 @@ export class AuthService {
   // Método para iniciar sesión
   async login(email: string, password: string): Promise<void> {
     try {
-      const response = await apiClient.post('/usuarios/login', { 
-        correo: email, 
-        contrasena: password 
+      const response = await apiClient.post('/auth/login', { 
+        email: email, 
+        password: password 
       });
       const { token } = response.data;
       localStorage.setItem('token', token); // Guardar el token en localStorage
@@ -30,7 +30,7 @@ export class AuthService {
           localStorage.setItem('rol', user.id_rol?.toString() || '0');
           
           // Guardar objeto completo del usuario (para otros componentes)
-          localStorage.setItem('usuario', JSON.stringify(user));
+          localStorage.setItem('auth', JSON.stringify(user));
         }
       } catch (profileError) {
         // Error silencioso
@@ -41,13 +41,13 @@ export class AuthService {
   }
 
   // Método para registrar un nuevo usuario
-  async register(userData: { nombre: string; apellido: string; email: string; password: string; cedula: string; telefono: string; carrera: string; id_rol: number }): Promise<void> {
+  async register(userData: { email: string; password: string; apellido: string; cedula: string; carrera: string; telefono: string; id_rol: number }): Promise<void> {
     try {
-      await apiClient.post('/usuarios/register', {
-        nombre: userData.nombre,
+      await apiClient.post('/auth/register', {
+        email: userData.email,
         apellido: userData.apellido,
         correo: userData.email,
-        contrasena: userData.password,
+        password: userData.password, 
         cedula: userData.cedula,
         carrera: userData.carrera,
         telefono: userData.telefono,
@@ -81,7 +81,7 @@ export class AuthService {
   // Método para obtener el perfil del usuario actual
   async getCurrentUser(): Promise<any> {
     try {
-      const response = await apiClient.get('/usuarios/profile');
+      const response = await apiClient.get('/auth/profile');
       return response.data;
     } catch (error) {
       // Si falla (token inválido/expirado), hacer logout
@@ -89,4 +89,14 @@ export class AuthService {
       throw error;
     }
   }
+async verify(): Promise<any> {
+  try {
+    const response = await apiClient.get('/auth/verify');
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+  
+
 }

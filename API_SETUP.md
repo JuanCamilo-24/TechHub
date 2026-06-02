@@ -163,7 +163,7 @@ app.use(cors({
 
 **Verificar:**
 1. ¿La URL es correcta? (debe incluir `/api`)
-2. ¿El endpoint existe en el backend?
+2. ¿El endpoint existe en el  end?
 3. ¿Vercel desplegó correctamente el backend?
 
 **Probar en navegador:**

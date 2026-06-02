@@ -21,7 +21,8 @@ export class PasswordComponent {
   cargando = false;
 
   requisitos = [
-    { label: 'Al menos 8 caracteres', valido: false, regex: /.{8,}/ },
+   
+   { label: 'Al menos 8 caracteres', valido: false, regex: /.{8,}/ },
     { label: 'Una letra mayúscula', valido: false, regex: /[A-Z]/ },
     { label: 'Una letra minúscula', valido: false, regex: /[a-z]/ },
     { label: 'Un número', valido: false, regex: /[0-9]/ },
