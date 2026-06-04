@@ -3,7 +3,7 @@
  * Ejecutar con: node test-api.js
  */
 
-const API_BASE_URL = 'https://tech-hub-proyecto-pedag-gico-integr.vercel.app/api';
+const API_BASE_URL = 'http://localhost:3000/api';
 
 async function testAPI() {
   console.log('🔍 Probando API de Vercel...\n');

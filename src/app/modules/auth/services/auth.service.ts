@@ -41,9 +41,10 @@ export class AuthService {
   }
 
   // Método para registrar un nuevo usuario
-  async register(userData: { email: string; password: string; apellido: string; cedula: string; carrera: string; telefono: string; id_rol: number }): Promise<void> {
+  async register(userData: {nombre: string; email: string; password: string; apellido: string; cedula: string; carrera: string; telefono: string; id_rol: number }): Promise<void> {
     try {
       await apiClient.post('/auth/register', {
+        nombre: userData.nombre,
         email: userData.email,
         apellido: userData.apellido,
         correo: userData.email,

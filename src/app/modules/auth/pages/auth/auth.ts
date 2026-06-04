@@ -112,8 +112,9 @@ export class Auth {
     this.cargando = true;
 
     try {
-      const { apellido, cedula, telefono, carrera, email, password } = this.registerForm.value;
+      const {nombre, apellido, cedula, telefono, carrera, email, password } = this.registerForm.value;
       await this.authService.register({
+        nombre,
         apellido,
         email,
         password,
