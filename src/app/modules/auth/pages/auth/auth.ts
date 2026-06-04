@@ -57,7 +57,12 @@ export class Auth {
     this.mostrarPasswordConfirm = !this.mostrarPasswordConfirm;
   }
 
+  /**
+   * ✅ MÉTODO MEJORADO DE LOGIN CON VALIDACIONES ADICIONALES
+   * Valida email, contraseña y conecta con el backend
+   */
   async iniciarSesion() {
+HEAD  
    
   // ❌ Validación 1: Verificar que el formulario sea válido
   if (this.loginForm.invalid) {
@@ -78,17 +83,47 @@ export class Auth {
   if (!password || password.length < 6) {
     this.alertService.error('Contraseña inválida', 'La contraseña debe tener al menos 6 caracteres');
     return;
-  }
+
+    // ❌ Validación 1: Verificar que el formulario sea válido
+    if (this.loginForm.invalid) {
+      this.marcarCamposComoTocados(this.loginForm);
+      this.alertService.warning('Formulario incompleto', 'Por favor completa todos los campos correctamente');
+      return;
+    }
+
+
+    // ❌ Validación 2: Verificar que el email tenga formato válido
+    const email = this.loginForm.get('email')?.value;
+    if (!email || !email.includes('@')) {
+      this.alertService.error('Email inválido', 'Por favor ingresa un email válido (ejemplo@correo.com)');
+      return;
+    }
+
+    // ❌ Validación 3: Verificar que la contraseña tenga mínimo 6 caracteres
+    const password = this.loginForm.get('password')?.value;
+    if (!password || password.length < 6) {
+      this.alertService.error('Contraseña débil', 'La contraseña debe tener al menos 6 caracteres');
+      return;
+    }
 
     this.cargando = true;
 
     try {
-      const { email, password } = this.loginForm.value;
+      // ✅ Enviar credenciales al backend
       await this.authService.login(email, password);
-      this.alertService.success('¡Bienvenido!', 'Inicio de sesión exitoso');
+      
+      // ✅ Mostrar mensaje de éxito
+      this.alertService.success('¡Bienvenido a TechHub!', 'Inicio de sesión exitoso');
+      
+      // ✅ Redirigir al dashboard/home
       this.router.navigate(['/home']);
-    } catch (error) {
-      this.alertService.error('Error', 'Credenciales incorrectas');
+    } catch (error: any) {
+      // ❌ Manejo de errores del backend
+      const mensajeError = error?.response?.data?.message || 
+                           error?.message || 
+                           'Credenciales incorrectas o servidor no disponible';
+      
+      this.alertService.error('Error en inicio de sesión', mensajeError);
     } finally {
       this.cargando = false;
     }
