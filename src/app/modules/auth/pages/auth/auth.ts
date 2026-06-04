@@ -62,67 +62,34 @@ export class Auth {
    * Valida email, contraseña y conecta con el backend
    */
   async iniciarSesion() {
-HEAD  
-   
-  // ❌ Validación 1: Verificar que el formulario sea válido
-  if (this.loginForm.invalid) {
-    this.marcarCamposComoTocados(this.loginForm);
-    this.alertService.warning('Formulario incompleto', 'Por favor completa todos los campos correctamente');
-    return;
-  }
-
-  // Validar formato básico de email
-  const email = this.loginForm.get('email')?.value as string | undefined;
-  if (!email || !email.includes('@')) {
-    this.alertService.error('Email inválido', 'Por favor ingresa un email válido');
-    return;
-  }
-
-  // Validar longitud mínima de contraseña
-  const password = this.loginForm.get('password')?.value as string | undefined;
-  if (!password || password.length < 6) {
-    this.alertService.error('Contraseña inválida', 'La contraseña debe tener al menos 6 caracteres');
-    return;
-
-    // ❌ Validación 1: Verificar que el formulario sea válido
     if (this.loginForm.invalid) {
       this.marcarCamposComoTocados(this.loginForm);
       this.alertService.warning('Formulario incompleto', 'Por favor completa todos los campos correctamente');
       return;
     }
 
-
-    // ❌ Validación 2: Verificar que el email tenga formato válido
-    const email = this.loginForm.get('email')?.value;
+    const email = this.loginForm.get('email')?.value as string | undefined;
     if (!email || !email.includes('@')) {
-      this.alertService.error('Email inválido', 'Por favor ingresa un email válido (ejemplo@correo.com)');
+      this.alertService.error('Email inválido', 'Por favor ingresa un email válido');
       return;
     }
 
-    // ❌ Validación 3: Verificar que la contraseña tenga mínimo 6 caracteres
-    const password = this.loginForm.get('password')?.value;
+    const password = this.loginForm.get('password')?.value as string | undefined;
     if (!password || password.length < 6) {
-      this.alertService.error('Contraseña débil', 'La contraseña debe tener al menos 6 caracteres');
+      this.alertService.error('Contraseña inválida', 'La contraseña debe tener al menos 6 caracteres');
       return;
     }
 
     this.cargando = true;
 
     try {
-      // ✅ Enviar credenciales al backend
       await this.authService.login(email, password);
-      
-      // ✅ Mostrar mensaje de éxito
       this.alertService.success('¡Bienvenido a TechHub!', 'Inicio de sesión exitoso');
-      
-      // ✅ Redirigir al dashboard/home
       this.router.navigate(['/home']);
     } catch (error: any) {
-      // ❌ Manejo de errores del backend
-      const mensajeError = error?.response?.data?.message || 
-                           error?.message || 
+      const mensajeError = error?.response?.data?.message ||
+                           error?.message ||
                            'Credenciales incorrectas o servidor no disponible';
-      
       this.alertService.error('Error en inicio de sesión', mensajeError);
     } finally {
       this.cargando = false;
